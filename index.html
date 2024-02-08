@@ -1,23 +1,82 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bucketliste</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!-- Font Awesome cdn css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./styles.css">
+    <title>Unsere Bucketlist</title>
 </head>
 <body>
-    <h1>Unsere Bucketliste</h1>
-    <ul id="bucketList">
-        <!-- Hier werden die Einträge der Bucketliste eingefügt -->
-    </ul>
-    <form id="addItemForm">
-        <input type="text" id="newItem" placeholder="Neuer Eintrag">
-        <button type="submit">Hinzufügen</button>
-        <button id="moveCheckedItems">Markierte Elemente verschieben</button>
-        <ul id="checkedList"></ul>
+    <header>
+        <div>
+            <h1>together since</h1>
+        </div>
+        <div>
+            <h3 id="timeSince">Placeholder</h3>
+        </div>
+    </header>
+    
+    <script>
+        // Funktion zur Berechnung der vergangenen Zeit seit dem 7.7.2018
+        function TimeTogether() {
+            // Startdatum definieren
+            const startDate = new Date('2018-07-07');
+            // Aktuelles Datum
+            const currentDate = new Date();
+    
+            // Berechnungen für Tage, Wochen, Monate und Jahre seit dem Startdatum
+            const daysSince = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+            const weeksSince = Math.floor(daysSince / 7);
+    
+            // Monate seit dem Startdatum
+            const monthsSince = currentDate.getMonth() - startDate.getMonth() +
+                (12 * (currentDate.getFullYear() - startDate.getFullYear()));
+    
+            // Jahre seit dem Startdatum
+            const yearsSince = currentDate.getFullYear() - startDate.getFullYear() - (currentDate.getMonth() < startDate.getMonth() || (currentDate.getMonth() === startDate.getMonth() && currentDate.getDate() < startDate.getDate()) ? 1 : 0);
 
+            // Rückgabe der HTML-Struktur mit den vergangenen Tagen, Wochen, Monaten und Jahren
+            return `${daysSince} Tage<br>` +
+                `${weeksSince} Wochen<br>` +
+                `${monthsSince} Monate<br>` +
+                `${yearsSince} Jahre`;
+        }
+    
+        // Funktionsaufruf und Einsetzen des Ergebnisses in das HTML-Element
+        document.addEventListener("DOMContentLoaded", function() {
+            // Funktion aufrufen und das Ergebnis in das HTML-Element einfügen
+            document.getElementById("timeSince").innerHTML = TimeTogether();
+        });
+    </script>
+    
+
+
+
+    <header>
+        <h1>Unsere Bucketlist</h1>
+    </header>
+    <form action="">
+        <input type="text" class="todo-input">
+        <button class="todo-button" type="submit">
+            <i class="fas fa-plus-circle fa-lg"></i>
+        </button>
+        
     </form>
 
-    <!-- Hier kommt der JavaScript-Code -->
-    <script src="script.js"></script>
+    <div class="todo-container">
+        <ul class="todo-list"></ul>
+    </div>
+
+
+
+    <script src="./script.js"></script>
+    
 </body>
 </html>
