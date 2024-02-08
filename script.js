@@ -1,69 +1,131 @@
-// Funktion zum Hinzufügen eines neuen Eintrags zur Liste
-function addNewItem(text) {
-    var newItemElement = document.createElement("li");
-    var checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.className = "checkbox"; // Klasse für das Styling hinzufügen
-    var label = document.createElement("label");
-    label.textContent = text;
+const todoInput = document.querySelector(".todo-input");
+const todoButton = document.querySelector(".todo-button");
+const todoList = document.querySelector(".todo-list");
+const filterOption = document.querySelector(".filter-todo");
 
-    newItemElement.appendChild(checkbox);
-    newItemElement.appendChild(label);
+document.addEventListener("DOMContentLoaded", getLocalTodos);
+todoButton.addEventListener("click", addTodo);
+todoList.addEventListener("click", deleteCheck);
+filterOption.addEventListener("change", filterTodo);
 
-    document.getElementById("bucketList").appendChild(newItemElement);
+function addTodo(event) {
+    event.preventDefault();
+    const todoDiv = document.createElement("div");
+    todoDiv.classList.add("todo");
+    const newTodo = document.createElement("li");
+    newTodo.innerText = todoInput.value; 
+    newTodo.classList.add("todo-item");
+    todoDiv.appendChild(newTodo);
+    //ADDING TO LOCAL STORAGE 
+    saveLocalTodos(todoInput.value);
+    
+    
+
+    const trashButton = document.createElement("button");
+    trashButton.innerHTML = '<i class="fas fa-trash"></li>';
+    trashButton.classList.add("trash-btn");
+    todoDiv.appendChild(trashButton);
+    
+    todoList.appendChild(todoDiv);
+    todoInput.value = "";
 }
 
-// Eventlistener für das Hinzufügen eines neuen Eintrags
-document.getElementById("addItemForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Verhindert das Neuladen der Seite beim Absenden des Formulars
-    var newItemInput = document.getElementById("newItem");
-    var newItemText = newItemInput.value.trim();
+function deleteCheck(e) {
+    const item = e.target;
 
-    if (newItemText !== "") {
-        addNewItem(newItemText); // Neuer Eintrag wird der Liste hinzugefügt
-        saveListToLocalStorage(); // Liste im localStorage aktualisieren
-        newItemInput.value = ""; // Zurücksetzen des Eingabefelds
-    }
-});
+    if(item.classList[0] === "trash-btn") {
+        const todo = item.parentElement;
+        todo.classList.add("slide");
 
-// Eventlistener für das Ändern des Checkbox-Status
-document.addEventListener("change", function(event) {
-    if (event.target.classList.contains("checkbox")) {
-        var listItem = event.target.parentNode;
-        if (event.target.checked) {
-            listItem.style.textDecoration = "line-through";
-        } else {
-            listItem.style.textDecoration = "none";
-        }
-        saveListToLocalStorage(); // Liste im localStorage aktualisieren
-    }
-});
-
-// Funktion zum Speichern der Bucketliste im localStorage
-function saveListToLocalStorage() {
-    var listItems = document.querySelectorAll("#bucketList li");
-    var items = [];
-    listItems.forEach(function(item) {
-        if (!item.querySelector(".checkbox").checked) { // Nur nicht abgehakte Elemente speichern
-            var text = item.querySelector("label").textContent;
-            items.push({ text: text });
-        }
-    });
-    localStorage.setItem("bucketList", JSON.stringify(items));
-}
-
-// Funktion zum Laden der Bucketliste aus dem localStorage
-function loadListFromLocalStorage() {
-    var storedList = localStorage.getItem("bucketList");
-    if (storedList) {
-        var items = JSON.parse(storedList);
-        items.forEach(function(item) {
-            addNewItem(item.text);
+        removeLocalTodos(todo);
+        todo.addEventListener("transitionend", function() {
+            todo.remove();
         });
     }
+
+    if(item.classList[0] === "complete-btn") {
+        const todo = item.parentElement;
+        todo.classList.toggle("completed");
+    }
 }
 
-// Beim Laden der Seite die Bucketliste aus dem localStorage laden
-window.addEventListener("load", function() {
-    loadListFromLocalStorage();
-});
+function filterTodo(e) {
+    const todos = todoList.childNodes;
+    todos.forEach(function(todo) {
+        switch(e.target.value) {
+            case "all": 
+                todo.style.display = "flex";
+                break;
+            case "completed": 
+                if(todo.classList.contains("completed")) {
+                    todo.style.display = "flex";
+                } else {
+                    todo.style.display = "none";
+                }
+                break;
+            case "incomplete":
+                if(!todo.classList.contains("completed")) {
+                    todo.style.display = "flex";
+                } else {
+                    todo.style.display = "none";
+                }
+                break;
+        }
+    });
+}
+
+function saveLocalTodos(todo) {
+    let todos;
+    if(localStorage.getItem("todos") === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem("todos"));
+    }
+    todos.push(todo);
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function getLocalTodos() {
+    let todos;
+    if(localStorage.getItem("todos") === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem("todos"));
+    }
+    todos.forEach(function(todo) {
+        const todoDiv = document.createElement("div");
+        todoDiv.classList.add("todo");
+        const newTodo = document.createElement("li");
+        newTodo.innerText = todo;
+        newTodo.classList.add("todo-item");
+        todoDiv.appendChild(newTodo);
+
+        
+
+        const trashButton = document.createElement("button");
+        trashButton.innerHTML = '<i class="fas fa-trash"></li>';
+        trashButton.classList.add("trash-btn");
+        todoDiv.appendChild(trashButton);
+
+        todoList.appendChild(todoDiv);
+    });
+}
+
+function removeLocalTodos(todo) {
+    let todos;
+    if(localStorage.getItem("todos") === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem("todos"));
+    }
+
+    const todoIndex = todo.children[0].innerText;
+    todos.splice(todos.indexOf(todoIndex), 1);
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+
+
+
+
+
