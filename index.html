@@ -1,0 +1,28 @@
+<!-- 
+git add .
+git commit -m initialcommit
+git push origin main
+-->>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bucketliste</title>
+</head>
+<body>
+    <h1>Meine Bucketliste</h1>
+    <ul id="bucketList">
+        <!-- Hier werden die Einträge der Bucketliste eingefügt -->
+    </ul>
+    <form id="addItemForm">
+        <input type="text" id="newItem" placeholder="Neuer Eintrag">
+        <button type="submit">Hinzufügen</button>
+        <button id="moveCheckedItems">Markierte Elemente verschieben</button>
+        <ul id="checkedList"></ul>
+
+    </form>
+
+    <!-- Hier kommt der JavaScript-Code -->
+    <script src="script.js"></script>
+</body>
+</html>
